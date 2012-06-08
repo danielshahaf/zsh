@@ -25,7 +25,5 @@
   esac
 
   # Replace the buffer with the editor output.
-  print -Rz - "$(<$1)" 
+  BUFFER="$(<$1)"
 } =(<<<"$PREBUFFER$BUFFER")
-
-zle send-break		# Force reload from the buffer stack
