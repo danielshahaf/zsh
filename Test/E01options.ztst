@@ -831,6 +831,25 @@
 >setting is seen
 ?zsh: exit 1
 
+  $ZTST_testdir/../Src/zsh -1 -f <<<'
+      (( 0 ))
+      [[ 0 == 1 ]]
+      [ 0 = 1 ]
+      true | false
+      ## Cannot test the following without "setopt MONITOR":
+      # false | true
+      print -ru2 "But not:"
+      if (( 0 )); then :; fi
+      if [[ 0 == 1 ]]; then :; fi
+      exit 0
+  '
+0:PRINT_EXIT_VALUE in conditions
+?zsh: exit 1
+?zsh: exit 1
+?zsh: exit 1
+?zsh: exit 1
+?But not:
+
   $ZTST_testdir/../Src/zsh -f <<<'
       setopt printexitvalue
       _return() { return $1 }

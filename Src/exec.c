@@ -1091,7 +1091,7 @@ static int
 execsimple(Estate state)
 {
     wordcode code = *state->pc++;
-    int lv, otj;
+    int otj;
 
     if (errflag)
 	return (lastval = 1);
@@ -1120,16 +1120,28 @@ execsimple(Estate state)
 	    fputc('\n', xtrerr);
 	    fflush(xtrerr);
 	}
-	lv = (errflag ? errflag : cmdoutval);
+	lastval = (errflag ? errflag : cmdoutval);
     } else if (code == WC_FUNCDEF) {
-	lv = execfuncdef(state, NULL);
+	lastval = execfuncdef(state, NULL);
     } else {
-	lv = (execfuncs[code - WC_CURSH])(state, 0);
+	lastval = (execfuncs[code - WC_CURSH])(state, 0);
+    }
+    /* Honor PRINTEXITVALUE for command-ish wordcodes. */
+    if ((code == WC_COND || code == WC_ARITH) &&
+	isset(PRINTEXITVALUE) && !printexitvalue_depth &&
+	isset(SHINSTDIN) &&
+	lastval && !subsh) {
+#if defined(ZLONG_IS_LONG_LONG) && defined(PRINTF_HAS_LLD)
+	fprintf(stderr, "zsh: exit %lld\n", lastval);
+#else
+	fprintf(stderr, "zsh: exit %ld\n", (long)lastval);
+#endif
+	fflush(stderr);
     }
 
     thisjob = otj;
 
-    return lastval = lv;
+    return lastval;
 }
 
 /* Main routine for executing a list.                                *
