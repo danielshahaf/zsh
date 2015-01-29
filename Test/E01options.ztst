@@ -817,6 +817,10 @@
 # Goodness only knows why.
   $ZTST_testdir/../Src/zsh -f <<<'
       setopt printexitvalue
+      if false; then :; fi
+      while false; do :; done
+      if =false; then :; fi
+      while =false; do :; done
       func() {
 	  false
       }

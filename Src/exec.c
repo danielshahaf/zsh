@@ -3620,7 +3620,8 @@ execcmd(Estate state, int input, int output, int how, int last1)
 		} else
 		    clearerr(stdout);
 	    }
-	    if (isset(PRINTEXITVALUE) && isset(SHINSTDIN) &&
+	    if (isset(PRINTEXITVALUE) && !printexitvalue_depth &&
+		isset(SHINSTDIN) &&
 		lastval && !subsh) {
 #if defined(ZLONG_IS_LONG_LONG) && defined(PRINTF_HAS_LLD)
 		fprintf(stderr, "zsh: exit %lld\n", lastval);
@@ -4690,7 +4691,8 @@ execfuncdef(Estate state, Eprog redir_prog)
 	    execshfunc(shf, args);
 	    ret = lastval;
 
-	    if (isset(PRINTEXITVALUE) && isset(SHINSTDIN) &&
+	    if (isset(PRINTEXITVALUE) && !printexitvalue_depth &&
+		isset(SHINSTDIN) &&
 		lastval) {
 #if defined(ZLONG_IS_LONG_LONG) && defined(PRINTF_HAS_LLD)
 		fprintf(stderr, "zsh: exit %lld\n", lastval);

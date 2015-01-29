@@ -1060,6 +1060,7 @@ setupvals(void)
 #endif
 
     breaks = loops = 0;
+    printexitvalue_depth = 0;
     lastmailcheck = time(NULL);
     locallevel = sourcelevel = 0;
     sfcontext = SFC_NONE;

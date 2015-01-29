@@ -35,6 +35,11 @@
 /**/
 int loops;
  
+/* nonzero if PRINTEXITVALUE is temporarily suppressed */
+
+/**/
+int printexitvalue_depth;
+
 /* # of continue levels */
  
 /**/
@@ -408,9 +413,14 @@ execwhile(Estate state, UNUSED(int do_exec))
     } else
         for (;;) {
             state->pc = loop;
+
+	    /* Evalute the condition. */
             noerrexit = 1;
+	    ++printexitvalue_depth;
             execlist(state, 1, 0);
+	    --printexitvalue_depth;
             noerrexit = olderrexit;
+
             if (!((lastval == 0) ^ isuntil)) {
                 if (breaks)
                     breaks--;
@@ -421,6 +431,7 @@ execwhile(Estate state, UNUSED(int do_exec))
                 lastval = oldval;
                 break;
             }
+	    /* Evaluate the body. */
             execlist(state, 1, 0);
             if (breaks) {
                 breaks--;
@@ -510,9 +521,14 @@ execif(Estate state, int do_exec)
 	    break;
 	}
 	next = state->pc + WC_IF_SKIP(code);
+
+	/* Evaluate the next condition. */
+	++printexitvalue_depth;
 	cmdpush(s ? CS_ELIF : CS_IF);
 	execlist(state, 1, 0);
 	cmdpop();
+	--printexitvalue_depth;
+
 	if (!lastval) {
 	    run = 1;
 	    break;
@@ -524,6 +540,7 @@ execif(Estate state, int do_exec)
     }
 
     if (run) {
+	/* Evaluate the body. */
 	/* we need to ignore lastval until we reach execcmd() */
 	noerrexit = olderrexit ? olderrexit : lastval ? 2 : 0;
 	cmdpush(run == 2 ? CS_ELSE : (s ? CS_ELIFTHEN : CS_IFTHEN));

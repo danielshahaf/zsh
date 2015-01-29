@@ -979,6 +979,7 @@ printjob(Job jn, int lng, int synch)
 		    sflag = 1;
 		if (job == thisjob && sig == SIGINT)
 		    doputnl = 1;
+		/* ### printexitvalue_depth? */
 		if (isset(PRINTEXITVALUE) && isset(SHINSTDIN)) {
 		    sflag = 1;
 		    skip_print = 0;
@@ -989,6 +990,7 @@ printjob(Job jn, int lng, int synch)
 		    len = strlen(sigmsg(sig));
 		if (job == thisjob && sig == SIGTSTP)
 		    doputnl = 1;
+	    /* ### printexitvalue_depth? */
 	    } else if (isset(PRINTEXITVALUE) && isset(SHINSTDIN) &&
 		       WEXITSTATUS(pn->status)) {
 		sflag = 1;
