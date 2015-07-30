@@ -4566,6 +4566,10 @@ exectime(Estate state, UNUSED(int do_exec))
     return lastval;
 }
 
+/* The displayed name of an anonymous function, broken out to a static so
+   it can be compared by address. */
+static const char ANON_FUNCTION_NAME[] = "(anon)";
+
 /* Define a shell function */
 
 /**/
@@ -4685,12 +4689,16 @@ execfuncdef(Estate state, Eprog redir_prog)
 
 	    if (!args)
 		args = newlinklist();
-	    shf->node.nam = "(anon)";
+	    shf->node.nam = (char*) ANON_FUNCTION_NAME;
 	    pushnode(args, shf->node.nam);
 
 	    execshfunc(shf, args);
 	    ret = lastval;
 
+	    /* ### Having this block means a non-zero exit code from the last
+	     * command in an anonymous function is reported twice: once in
+	     * doshfunc() [which the above execshfunc() called] and once here.
+	     * Maybe remove this block to deduplicate? */
 	    if (isset(PRINTEXITVALUE) && !printexitvalue_depth &&
 		isset(SHINSTDIN) &&
 		lastval) {
@@ -5128,7 +5136,8 @@ doshfunc(Shfunc shfunc, LinkList doshargs, int noreturnval)
      * value of oflags after the call.
      */
     oflags = flags;
-    ++printexitvalue_depth; /* disable PRINTEXITVALUE */
+    if (shfunc->node.nam != ANON_FUNCTION_NAME) /* compare by address */
+	++printexitvalue_depth; /* disable PRINTEXITVALUE */
     if (doshargs) {
 	LinkNode node;
 
@@ -5239,7 +5248,8 @@ doshfunc(Shfunc shfunc, LinkList doshargs, int noreturnval)
 	opts[LOCALOPTIONS] = saveopts[LOCALOPTIONS];
 	opts[LOCALLOOPS] = saveopts[LOCALLOOPS];
     }
-    --printexitvalue_depth; /* enable PRINTEXITVALUE */
+    if (shfunc->node.nam != ANON_FUNCTION_NAME) /* compare by address */
+	--printexitvalue_depth; /* enable PRINTEXITVALUE */
 
     if (opts[LOCALLOOPS]) {
 	if (contflag)

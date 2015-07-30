@@ -833,11 +833,15 @@
 
   $ZTST_testdir/../Src/zsh -f <<<'
       setopt printexitvalue
-      () { [[ -o printexitvalue ]] && print seen; false; }
+      _return() { return $1 }
+      f() { () { return 2 }; true }; f # no output
+      () { [[ -o printexitvalue ]] && print seen; _return 3; _return 4; }
   '
-1:PRINT_EXIT_VALUE option for anonymous function
+4:PRINT_EXIT_VALUE option for anonymous function
 >seen
-?zsh: exit 1
+?zsh: exit 3
+?zsh: exit 4
+?zsh: exit 4
 
   setopt promptbang
   print -P !
