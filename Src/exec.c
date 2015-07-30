@@ -5128,7 +5128,7 @@ doshfunc(Shfunc shfunc, LinkList doshargs, int noreturnval)
      * value of oflags after the call.
      */
     oflags = flags;
-    opts[PRINTEXITVALUE] = 0;
+    ++printexitvalue_depth; /* disable PRINTEXITVALUE */
     if (doshargs) {
 	LinkNode node;
 
@@ -5236,10 +5236,10 @@ doshfunc(Shfunc shfunc, LinkList doshargs, int noreturnval)
     } else {
 	/* just restore a couple. */
 	opts[XTRACE] = saveopts[XTRACE];
-	opts[PRINTEXITVALUE] = saveopts[PRINTEXITVALUE];
 	opts[LOCALOPTIONS] = saveopts[LOCALOPTIONS];
 	opts[LOCALLOOPS] = saveopts[LOCALLOOPS];
     }
+    --printexitvalue_depth; /* enable PRINTEXITVALUE */
 
     if (opts[LOCALLOOPS]) {
 	if (contflag)

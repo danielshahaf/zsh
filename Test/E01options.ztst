@@ -822,18 +822,21 @@
       if =false; then :; fi
       while =false; do :; done
       func() {
+	  if [[ -o printexitvalue ]]; then print setting is seen; fi
 	  false
       }
       func
   '
 1:PRINT_EXIT_VALUE option
+>setting is seen
 ?zsh: exit 1
 
   $ZTST_testdir/../Src/zsh -f <<<'
       setopt printexitvalue
-      () { false; }
+      () { [[ -o printexitvalue ]] && print seen; false; }
   '
 1:PRINT_EXIT_VALUE option for anonymous function
+>seen
 ?zsh: exit 1
 
   setopt promptbang
