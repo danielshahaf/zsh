@@ -4483,6 +4483,38 @@ unmeta(const char *file_name)
     return fn;
 }
 
+/* Return the last character of a metafied non-empty string */
+
+/**/
+mod_export char
+ztr_last(char const *s)
+{
+    char last;
+
+    if (!*s) {
+	DPUTS(1, "BUG: ztr_last() called on empty string\n");
+
+	/* We must return some value.  Hopefully NUL is good enough. */
+	return '\0';
+    }
+
+    while (*s) {
+	if (*s == Meta) {
+	    ++s;
+	    if (! *s) {
+		DPUTS(1, "BUG: unexpected end of string in ztr_last()\n");
+
+		/* We must return some value.  Hopefully NUL is good enough. */
+		return '\0';
+	    }
+	    last = *s++ ^ 32;
+	}
+	else
+	    last = *s++;
+    }
+    return last;
+}
+
 /*
  * Unmetafy and compare two strings, comparing unsigned character values.
  * "a\0" sorts after "a".

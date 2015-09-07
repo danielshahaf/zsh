@@ -1728,12 +1728,16 @@ infernexthist(Histent he, UNUSED(char **args))
     return NULL;
 }
 
+/* Defined in zle_misc.c */
+void zle_strip_trailing_newline_if_after_paste(void);
+
 /**/
 int
 acceptandinfernexthistory(char **args)
 {
     Histent he;
 
+    zle_strip_trailing_newline_if_after_paste();
     if (!(he = infernexthist(hist_ring, args)))
 	return 1;
     zpushnode(bufstack, ztrdup(he->node.nam));

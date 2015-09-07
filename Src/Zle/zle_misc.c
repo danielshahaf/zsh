@@ -395,10 +395,34 @@ poundinsert(UNUSED(char **args))
     return 0;
 }
 
+/* Declare non-static so zle_hist.c can use it */
+void zle_strip_trailing_newline_if_after_paste(void);
+
+/* If the last widget is a paste, and the last byte is a newline, strip it.
+ *
+ * If it was syntactically whitespace, that's cleaner; and if it was
+ * significant, it will be re-added later.
+ */
+void zle_strip_trailing_newline_if_after_paste(void)
+{
+    if (lbindk == Th(z_bracketedpaste)) {
+	if (zlemetaline ? zlemetall : zlell) {
+	    char last = zlemetaline ? ztr_last(zlemetaline) : zleline[zlell-1];
+	    if (last == ZWC('\n')) {
+		/* backwarddeletechar() doesn't use ARGS, but be conservative
+		 * and pass them empty. */
+		static char *empty_args[] = { NULL };
+		backwarddeletechar(empty_args);
+	    }
+	}
+    }
+}
+
 /**/
 int
 acceptline(UNUSED(char **args))
 {
+    zle_strip_trailing_newline_if_after_paste();
     done = 1;
     return 0;
 }
@@ -407,6 +431,7 @@ acceptline(UNUSED(char **args))
 int
 acceptandhold(UNUSED(char **args))
 {
+    zle_strip_trailing_newline_if_after_paste();
     zpushnode(bufstack, zlelineasstring(zleline, zlell, 0, NULL, NULL, 0));
     stackcs = zlecs;
     done = 1;
