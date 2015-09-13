@@ -2,8 +2,8 @@
 
 local expl ret=1
 local -a onopts offopts
-onopts=( ${(k)_comp_caller_options[(R)on]} )
-offopts=( ${(k)_comp_caller_options[(R)off]} )
+onopts=( ${(k)_comp_caller_options[(R)on]} ) # TODO(WIP/pev): revert 36177
+offopts=( ${(k)_comp_caller_options[(R)off]} ) # TODO(WIP/pev): revert 36177
 case $service in
   setopt) onopts=(no$onopts) ;;
   unsetopt) offopts=(no$offopts) ;;
