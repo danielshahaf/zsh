@@ -445,9 +445,9 @@ subsect(Functions)
 The following function is defined by tt(compinit) and may be called
 directly.
 
+startitem()
 findex(compdef)
 cindex(completion system, adding definitions)
-startitem()
 redef(SPACES)(0)(tt(ifztexi(NOTRANS(@ @ @ @ @ @ ))ifnztexi(      )))
 xitem(tt(compdef) [ tt(-ane) ] var(function name) ... [ tt(-){tt(p)|tt(P)} var(pattern) ... [ tt(-N) var(name) ...]])
 xitem(tt(compdef -d) var(name) ...)
@@ -515,6 +515,16 @@ underscore.
 
 Wherever applicable, the tt(-a) option makes the var(function)
 autoloadable, equivalent to tt(autoload -U )var(function).
+)
+findex(compexists)
+cindex(completion system, checking existence of definitions)
+item(tt(compexists) var(name))(
+This function checks whether the command var(name) has completion.
+The return value is tt(0) if var(name) has a completion and tt(1) if it
+doesn't.  If no var(name) was passed, return tt(2).
+
+Completions for var(name) can be defined with tt(compdef), e.g.,
+with tt(compdef name=)var(foo) or tt(compdef )var(_foo)tt( name).
 )
 enditem()
 

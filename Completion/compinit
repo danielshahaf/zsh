@@ -430,6 +430,11 @@ compdef() {
   fi
 }
 
+compexists() {
+  (( $# )) || return 2
+  (( $+_comps[$1] ))
+}
+
 # Now we automatically make the definition files autoloaded.
 
 typeset _i_wdirs _i_wfiles
