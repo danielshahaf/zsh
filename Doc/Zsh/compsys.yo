@@ -455,6 +455,11 @@ xitem(tt(compdef -k) [ tt(-an) ] var(function style key-sequence) [ var(key-sequ
 item(tt(compdef -K) [ tt(-an) ] var(function name style key-seq) [ var(name style seq) ... ])(
 The first form defines the var(function) to call for completion in the
 given contexts as described for the tt(#compdef) tag above.
+For example,
+
+example(compdef _pids foo)
+
+uses the function tt(_pids) to complete process IDs for the command tt(foo).
 
 Alternatively, all the arguments may have the form
 `var(cmd)tt(=)var(service)'.  Here var(service) should already have been
@@ -512,13 +517,6 @@ Wherever applicable, the tt(-a) option makes the var(function)
 autoloadable, equivalent to tt(autoload -U )var(function).
 )
 enditem()
-
-The function tt(compdef) can be used to associate existing completion
-functions with new commands.  For example,
-
-example(compdef _pids foo)
-
-uses the function tt(_pids) to complete process IDs for the command tt(foo).
 
 Note also the tt(_gnu_generic) function described below, which can be
 used to complete options for commands that understand the
