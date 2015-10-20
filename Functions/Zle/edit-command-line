@@ -25,5 +25,12 @@
   esac
 
   # Replace the buffer with the editor output.
-  BUFFER="$(<$1)"
+  # avoid drawing a new prompt when we can
+  [[ -z $PREBUFFER ]] && {
+    BUFFER="$(<$1)" 
+  } || {
+    print -Rz - "$(<$1)"
+    zle send-break
+  }
+
 } =(<<<"$PREBUFFER$BUFFER")
