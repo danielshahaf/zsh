@@ -1731,6 +1731,7 @@ struct param {
 
     int base;			/* output base or floating point prec    */
     int width;			/* field width                           */
+    int length;                 /* length of array                       */
     char *env;			/* location in environment, if exported  */
     char *ename;		/* name of corresponding environment var */
     Param old;			/* old struct for use with local         */

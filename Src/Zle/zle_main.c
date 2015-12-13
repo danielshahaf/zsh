@@ -1126,6 +1126,7 @@ char *
 zleread(char **lp, char **rp, int flags, int context, char *init, char *finish)
 {
     char *s, **bracket;
+    int bracket_len;
     int old_errno = errno;
     int tmout = getiparam("TMOUT");
 
@@ -1255,7 +1256,7 @@ zleread(char **lp, char **rp, int flags, int context, char *init, char *finish)
 
     zlecallhook(init, NULL);
 
-    if ((bracket = getaparam("zle_bracketed_paste")) && arrlen(bracket) == 2)
+    if ((bracket = getaparam("zle_bracketed_paste", &bracket_len)) && bracket_len == 2)
 	fputs(*bracket, shout);
 
     zrefresh();
@@ -1267,7 +1268,7 @@ zleread(char **lp, char **rp, int flags, int context, char *init, char *finish)
 		  "ZLE_VARED_ABORTED" :
 		  "ZLE_LINE_ABORTED", zlegetline(NULL, NULL));
 
-    if ((bracket = getaparam("zle_bracketed_paste")) && arrlen(bracket) == 2)
+    if ((bracket = getaparam("zle_bracketed_paste", &bracket_len)) && bracket_len == 2)
 	fputs(bracket[1], shout);
 
     if (done && !exit_pending && !errflag)

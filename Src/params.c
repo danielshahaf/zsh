@@ -2659,14 +2659,23 @@ getsparam_u(char *s)
 
 /**/
 mod_export char **
-getaparam(char *s)
+getaparam(char *s, int *len)
 {
     struct value vbuf;
     Value v;
 
     if (!idigit(*s) && (v = getvalue(&vbuf, &s, 0)) &&
 	PM_TYPE(v->pm->node.flags) == PM_ARRAY)
+    {
+#ifdef DEBUG
+	unsigned expected = arrlen(v->pm->gsu.a->getfn(v->pm));
+	if (v->pm->length != expected)
+	    zerrnam("getaparam", "PATCH BUG: invariant not holding: %d != %d", v->pm->length, expected);
+#endif
+	if (len)
+	    *len = arrlen(v->pm->gsu.a->getfn(v->pm));
 	return v->pm->gsu.a->getfn(v->pm);
+    }
     return NULL;
 }
 
