@@ -2136,6 +2136,24 @@ scanpmusergroups(UNUSED(HashTable ht), ScanFunc func, int flags)
 }
 
 
+/* Functions for the AUTOINCREMENT special parameter. */
+
+static zlong autoincrement = 0;
+
+static zlong
+autoincrementgetfn(UNUSED(Param pm))
+{
+    return autoincrement++;
+}
+
+static void
+autoincrementsetfn(UNUSED(Param pm), zlong value)
+{
+    autoincrement = value;
+}
+
+
+
 /* Table for defined parameters. */
 
 struct pardef {
@@ -2192,8 +2210,13 @@ static const struct gsu_array dirs_gsu =
 static const struct gsu_array historywords_gsu =
 { histwgetfn, arrsetfn, stdunsetfn };
 
+static const struct gsu_integer autoincrement_gsu =
+{ autoincrementgetfn, autoincrementsetfn, stdunsetfn };
+
 /* Make sure to update autofeatures in parameter.mdd if necessary */
 static struct paramdef partab[] = {
+    SPECIALPMDEF("AUTOINCREMENT", PM_SPECIAL | PM_INTEGER,
+	    &autoincrement_gsu, NULL, NULL),
     SPECIALPMDEF("aliases", 0,
 	    &pmraliases_gsu, getpmralias, scanpmraliases),
     SPECIALPMDEF("builtins", PM_READONLY_SPECIAL, NULL, getpmbuiltin, scanpmbuiltins),
