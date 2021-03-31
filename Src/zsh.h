@@ -38,12 +38,15 @@
 typedef ZSH_64_BIT_TYPE zlong;
 #if defined(ZLONG_IS_LONG_LONG) && defined(LLONG_MAX)
 #define ZLONG_MAX LLONG_MAX
+#define ZLONG_MIN LLONG_MIN
 #else
 #ifdef ZLONG_IS_LONG_64
 #define ZLONG_MAX LONG_MAX
+#define ZLONG_MIN LONG_MIN
 #else
 /* umm... */
 #define  ZLONG_MAX ((zlong)9223372036854775807)
+#define  ZLONG_MIN ((zlong)-9223372036854775808)
 #endif
 #endif
 #ifdef ZSH_64_BIT_UTYPE
@@ -55,6 +58,7 @@ typedef unsigned zlong zulong;
 typedef long zlong;
 typedef unsigned long zulong;
 #define ZLONG_MAX LONG_MAX
+#define ZLONG_MIN LONG_MIN
 #endif
 
 /*

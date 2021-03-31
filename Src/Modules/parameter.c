@@ -2143,6 +2143,10 @@ static zlong autoincrement = 0;
 static zlong
 autoincrementgetfn(UNUSED(Param pm))
 {
+    if (autoincrement == ZLONG_MAX) {
+	autoincrement = ZLONG_MIN;
+	return ZLONG_MAX;
+    }
     return autoincrement++;
 }
 
